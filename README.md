@@ -37,3 +37,4 @@ Comming soon... ( В процесі розробки.
 ## Допомога
 Якщо ви хочете допомогти з кодом можете написати в [Offer help](https://github.com/zakharfsk/auto-reporting-fake-channels/issues/1)<br>
 Якщо ви хочете запропонувати нові trigger слова пишіть в [Add new triggre letters](https://github.com/zakharfsk/auto-reporting-fake-channels/issues/2)
+Якщо у вас виникають якісь проблеми з використанням скріпта пишіть в [Problems with scripts](https://github.com/zakharfsk/auto-reporting-fake-channels/issues/3)

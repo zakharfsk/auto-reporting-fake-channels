@@ -30,9 +30,6 @@ triggers = [
 ]
 
 
-# 5908870
-# cd1dfffc44ca1aa0ff8b9dc13e4a56c7
-
 try:
     if not os.path.exists(r'settings.json'):
 

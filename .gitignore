@@ -1,3 +1,6 @@
 env/
 *.session
 *.session-journal
+__pycache__/
+settings.json
+main.exe

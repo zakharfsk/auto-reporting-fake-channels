@@ -26,7 +26,9 @@ triggers = [
     'Канали Росії, з пропагандою',
     'тг канал з мітками',
     'канал з мітками',
-    'тг канал з метками'
+    'тг канал з метками',
+    'Репорт загарбникам',
+    'Репорт'
 ]
 
 
@@ -43,6 +45,8 @@ try:
                 'api_id': API_ID,
                 'api_hash': API_HASH
             }, st)
+            st.close()
+        print('Your data succsesfull write to settings.json. You can open and see.')
     else:
         with open('settings.json', 'r+', encoding='UTF-8') as st:
             data = json.load(st)
@@ -50,6 +54,8 @@ try:
         PHONE_NUMBER = data['phone_number']
         API_ID = data['api_id']
         API_HASH = data['api_hash']
+        st.close()
+        print('Your data succsesfull get from settings.json. You can open and see.')
         
 except ValueError:
     print('API_ID must be integer')

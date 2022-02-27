@@ -3,7 +3,6 @@ env/
 *.session-journal
 __pycache__/
 settings.json
-main.exe
 dist/
 build/
 main.spec

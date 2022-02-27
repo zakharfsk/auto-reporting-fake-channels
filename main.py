@@ -62,6 +62,8 @@ except ValueError:
 client = TelegramClient(PHONE_NUMBER, API_ID, API_HASH) # створення підключення до вашого ТГ
 client.connect()
 
+print('Program start...')
+
 try:
     if not client.is_user_authorized():
         client.send_code_request(PHONE_NUMBER)

@@ -15,8 +15,6 @@ with open(r'triggres_word.txt', 'r', encoding='UTF-8') as file: # Слова т�
 for trigger in words:
     triggers.append(trigger.rstrip('\n'))
 
-print(triggers)
-
 try:
     if not os.path.exists(r'settings.json'): # налаштування
 

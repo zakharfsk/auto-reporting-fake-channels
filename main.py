@@ -29,11 +29,11 @@ triggers = [
     'тг канал з метками',
     'Репорт загарбникам',
     'Репорт'
-]
+] # Слова тріги, тобто на які спрацьовує репорт каналів
 
 
 try:
-    if not os.path.exists(r'settings.json'):
+    if not os.path.exists(r'settings.json'): # налаштування
 
         PHONE_NUMBER = input('Input your telephone number: ')
         API_ID = int(input('Input API_ID (datails in documentation): '))
@@ -60,30 +60,30 @@ try:
 except ValueError:
     print('API_ID must be integer')
 
-client = TelegramClient(PHONE_NUMBER, API_ID, API_HASH)
+client = TelegramClient(PHONE_NUMBER, API_ID, API_HASH) # створення підключення до вашого ТГ
 client.connect()
 
 try:
     if not client.is_user_authorized():
         client.send_code_request(PHONE_NUMBER)
         client.sign_in(PHONE_NUMBER, getpass(
-            'Еnter the code sent to you in the telegram: '))
-except SessionPasswordNeededError as err:
+            'Еnter the code sent to you in the telegram: ')) 
+except SessionPasswordNeededError as err: # якщо у вас підключеня двухфакторная авторизація то спрацює код нижче, якщо ні то пароль не попросять
     client.sign_in(password=getpass('Enter the password from your telegram: '))
 
 
 @client.on(events.NewMessage)
-async def check(event: events.NewMessage.Event):
+async def check(event: events.NewMessage.Event): # функція для проглядання каналів в Тг і виявлення феків
     for i in range(len(triggers)):
         if triggers[i].lower() in event.text.lower():
             urls = re.findall(r'(?P<url>https?://[^\s]+)', event.text)
             usernames = re.findall(r'(@[^\s],+)', event.text)
 
-            for username in usernames:
+            for username in usernames: 
                 try:
                     channel_info_by_username = await client.get_entity(username)
 
-                    result = await client(functions.messages.ReportRequest(
+                    result = await client(functions.messages.ReportRequest( # відправка репорта на канал
                         peer=channel_info_by_username,
                         id=[1],
                         reason=types.InputReportReasonOther(),
@@ -92,7 +92,7 @@ async def check(event: events.NewMessage.Event):
                         'False information about Russia\'s war with Ukraine\n'
                         'Propaganda of the war in Ukraine. Propaganda of the murder of Ukrainians and Ukrainian soldiers.\n'
                         'Пропаганда війни в Україні. Пропаганда вбивства українців та українських солдат.'))
-                    print(f'Channel {channel_info_by_username.title} reported. Status: ' + str(result))
+                    print(f'Channel {channel_info_by_username.title} reported. Status: ' + str(result)) # якщо статус True то канал успішно зарепорчений
                 except ValueError:
                     pass
             
@@ -100,7 +100,7 @@ async def check(event: events.NewMessage.Event):
                 try:
                     channel_info_by_url = await client.get_entity(url)
 
-                    result = await client(functions.messages.ReportRequest(
+                    result = await client(functions.messages.ReportRequest( # відправка репорта на канал
                         peer=channel_info_by_url,
                         id=[1],
                         reason=types.InputReportReasonOther(),
@@ -109,15 +109,10 @@ async def check(event: events.NewMessage.Event):
                         'False information about Russia\'s war with Ukraine\n'
                         'Propaganda of the war in Ukraine. Propaganda of the murder of Ukrainians and Ukrainian soldiers.\n'
                         'Пропаганда війни в Україні. Пропаганда вбивства українців та українських солдат.'))
-                    print(f'Channel {channel_info_by_url.title} is reported. Status: ' + str(result))
+                    print(f'Channel {channel_info_by_url.title} is reported. Status: ' + str(result)) # якщо статус True то канал успішно зарепорчений
                 except ValueError:
                     pass
-            print(
-                f'\nChannel: {event.chat.title}\n'
-                f'Links: {urls}\n'
-                f'Usernames: {usernames}\n\n'
-            )
             break
 
-client.start()
-client.run_until_disconnected()
+client.start() # запуск програми
+client.run_until_disconnected() # програма буде працювати поки ви самі не відключете

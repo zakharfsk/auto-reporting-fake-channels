@@ -4,3 +4,6 @@ env/
 __pycache__/
 settings.json
 main.exe
+dist/
+build/
+main.spec

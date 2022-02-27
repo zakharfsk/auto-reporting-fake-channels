@@ -93,7 +93,7 @@ async def check(event): # функція для проглядання кана�
                         'Пропаганда війни в Україні. Пропаганда вбивства українців та українських солдат.'))
                     print(f'Channel {channel_info_by_username.title} reported. Status: ' + str(result)) # якщо статус True то канал успішно зарепорчений
                 except Exception as err:
-                    print(f'You have a error: {err}')
+                    pass
             
             for url in urls:
                 try:
@@ -110,7 +110,7 @@ async def check(event): # функція для проглядання кана�
                         'Пропаганда війни в Україні. Пропаганда вбивства українців та українських солдат.'))
                     print(f'Channel {channel_info_by_url.title} is reported. Status: ' + str(result)) # якщо статус True то канал успішно зарепорчений
                 except Exception as err:
-                    print(f'You have a error: {err}')
+                    pass
             break
 
 client.start() # запуск програми

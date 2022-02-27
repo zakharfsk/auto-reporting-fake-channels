@@ -14,8 +14,8 @@
 ### Створення додатку в Telegram:
 1. Спочатку перейдіть на сайт https://my.telegram.org/auth
 2. Пройдіть авторизацію.
-3. Далі перейдіть на вкладку `API development tools`
-![image](https://user-images.githubusercontent.com/68950796/155895319-835ce948-6070-4835-bb05-5d13a9e62727.png)
+3. Далі перейдіть на вкладку `API development tools`<br>
+![image](https://user-images.githubusercontent.com/68950796/155900642-5d7e8dd8-596a-44f3-ae16-4f0c3cbd4c53.png)
 4. Створіть новий додаток. (офф документація - https://core.telegram.org/api/obtaining_api_id)
 5. Після того як ви створили вам буде потрібно взяти звідти вот ці данні: 
 ![image](https://user-images.githubusercontent.com/68950796/155895646-f90c0f15-b598-426a-8ae4-a7db7bc56043.png)<br>

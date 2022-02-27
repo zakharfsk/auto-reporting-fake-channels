@@ -31,7 +31,6 @@ triggers = [
     'Репорт'
 ] # Слова тріги, тобто на які спрацьовує репорт каналів
 
-
 try:
     if not os.path.exists(r'settings.json'): # налаштування
 
@@ -45,7 +44,7 @@ try:
                 'api_id': API_ID,
                 'api_hash': API_HASH
             }, st)
-            st.close()
+        
         print('Your data succsesfull write to settings.json. You can open and see.')
     else:
         with open('settings.json', 'r+', encoding='UTF-8') as st:
@@ -54,7 +53,7 @@ try:
         PHONE_NUMBER = data['phone_number']
         API_ID = data['api_id']
         API_HASH = data['api_hash']
-        st.close()
+    
         print('Your data succsesfull get from settings.json. You can open and see.')
         
 except ValueError:
@@ -73,11 +72,11 @@ except SessionPasswordNeededError as err: # якщо у вас підключе�
 
 
 @client.on(events.NewMessage)
-async def check(event: events.NewMessage.Event): # функція для проглядання каналів в Тг і виявлення феків
+async def check(event): # функція для проглядання каналів в Тг і виявлення феків
     for i in range(len(triggers)):
         if triggers[i].lower() in event.text.lower():
             urls = re.findall(r'(?P<url>https?://[^\s]+)', event.text)
-            usernames = re.findall(r'(@[^\s],+)', event.text)
+            usernames = re.findall(r'(@[^\s]+)', event.text)
 
             for username in usernames: 
                 try:
@@ -93,8 +92,8 @@ async def check(event: events.NewMessage.Event): # функція для про�
                         'Propaganda of the war in Ukraine. Propaganda of the murder of Ukrainians and Ukrainian soldiers.\n'
                         'Пропаганда війни в Україні. Пропаганда вбивства українців та українських солдат.'))
                     print(f'Channel {channel_info_by_username.title} reported. Status: ' + str(result)) # якщо статус True то канал успішно зарепорчений
-                except ValueError:
-                    pass
+                except Exception as err:
+                    print(f'You have a error: {err}')
             
             for url in urls:
                 try:
@@ -110,8 +109,8 @@ async def check(event: events.NewMessage.Event): # функція для про�
                         'Propaganda of the war in Ukraine. Propaganda of the murder of Ukrainians and Ukrainian soldiers.\n'
                         'Пропаганда війни в Україні. Пропаганда вбивства українців та українських солдат.'))
                     print(f'Channel {channel_info_by_url.title} is reported. Status: ' + str(result)) # якщо статус True то канал успішно зарепорчений
-                except ValueError:
-                    pass
+                except Exception as err:
+                    print(f'You have a error: {err}')
             break
 
 client.start() # запуск програми

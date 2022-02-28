@@ -4,7 +4,9 @@ import re
 from getpass import getpass
 
 from telethon import functions, types
-from telethon.errors.rpcerrorlist import SessionPasswordNeededError
+from telethon.errors.rpcerrorlist import (PasswordHashInvalidError,
+                                          PhoneNumberInvalidError,
+                                          SessionPasswordNeededError)
 from telethon.sync import TelegramClient, events
 
 triggers = []
@@ -15,46 +17,93 @@ with open(r'triggres_word.txt', 'r', encoding='UTF-8') as file: # Слова т�
 for trigger in words:
     triggers.append(trigger.rstrip('\n'))
 
-try:
-    if not os.path.exists(r'settings.json'): # налаштування
+def get_data_for_connect():
+    PHONE_NUMBER = input('Input your telephone number: ')
+    API_ID = int(input('Input API_ID (datails in documentation): '))
+    API_HASH = input('Input API_HASH (datails in documentation): ')
 
-        PHONE_NUMBER = input('Input your telephone number: ')
-        API_ID = int(input('Input API_ID (datails in documentation): '))
-        API_HASH = input('Input API_HASH (datails in documentation): ')
-
-        with open('settings.json', 'w+', encoding='UTF-8') as st:
-            json.dump({
+    with open('settings.json', 'w+', encoding='UTF-8') as st:
+        json.dump({
                 'phone_number': PHONE_NUMBER,
                 'api_id': API_ID,
                 'api_hash': API_HASH
-            }, st)
-        
-        print('Your data succsesfull write to settings.json. You can open and see.')
-    else:
-        with open('settings.json', 'r+', encoding='UTF-8') as st:
-            data = json.load(st)
+        }, st)
 
-        PHONE_NUMBER = data['phone_number']
-        API_ID = data['api_id']
-        API_HASH = data['api_hash']
+    print('Your data succsesfull write to settings.json. You can open and see.')    
     
-        print('Your data succsesfull get from settings.json. You can open and see.')
+    return PHONE_NUMBER, API_ID, API_HASH
+
+if not os.path.exists(r'settings.json'): # налаштування
+    try:
+        data_for_connect = get_data_for_connect()
         
-except ValueError:
-    print('API_ID must be integer')
+        client = TelegramClient(data_for_connect[0], data_for_connect[1], data_for_connect[2]) # створення підключення до вашого ТГ
+        client.connect()
 
-client = TelegramClient(PHONE_NUMBER, API_ID, API_HASH) # створення підключення до вашого ТГ
-client.connect()
+        try:
+            if not client.is_user_authorized():
+                client.send_code_request(data_for_connect[0])
+                client.sign_in(data_for_connect[0], getpass(
+                    'Еnter the code sent to you in the telegram: ')) 
+        except SessionPasswordNeededError as err: # якщо у вас підключеня двухфакторная авторизація то спрацює код нижче, якщо ні то пароль не попросять
+            try:
+                client.sign_in(password=getpass('Enter the password from your telegram: '))
+            except PasswordHashInvalidError:
+                client.sign_in(password=getpass('Invalid password. Please try again: '))
+        print('Program start...')
+    except ValueError:
+        print('API_ID must be integer.')
+        data_for_connect = get_data_for_connect()
+        
+        client = TelegramClient(data_for_connect[0], data_for_connect[1], data_for_connect[2]) # створення підключення до вашого ТГ
+        client.connect()
 
-print('Program start...')
+        try:
+            if not client.is_user_authorized():
+                client.send_code_request(data_for_connect[0])
+                client.sign_in(data_for_connect[0], getpass(
+                    'Еnter the code sent to you in the telegram: ')) 
+        except SessionPasswordNeededError as err: # якщо у вас підключеня двухфакторная авторизація то спрацює код нижче, якщо ні то пароль не попросять
+            try:
+                client.sign_in(password=getpass('Enter the password from your telegram: '))
+            except PasswordHashInvalidError:
+                client.sign_in(password=getpass('Invalid password. Please try again: '))
 
-try:
-    if not client.is_user_authorized():
-        client.send_code_request(PHONE_NUMBER)
-        client.sign_in(PHONE_NUMBER, getpass(
-            'Еnter the code sent to you in the telegram: ')) 
-except SessionPasswordNeededError as err: # якщо у вас підключеня двухфакторная авторизація то спрацює код нижче, якщо ні то пароль не попросять
-    client.sign_in(password=getpass('Enter the password from your telegram: '))
+        print('Program start...')
+    
+    except PhoneNumberInvalidError:
+        print('You enter invalid telephon number. Pleas enter again.')
+        data_for_connect = get_data_for_connect()
+        
+        client = TelegramClient(data_for_connect[0], data_for_connect[1], data_for_connect[2]) # створення підключення до вашого ТГ
+        client.connect()
+
+        try:
+            if not client.is_user_authorized():
+                client.send_code_request(data_for_connect[0])
+                client.sign_in(data_for_connect[0], getpass(
+                    'Еnter the code sent to you in the telegram: ')) 
+        except SessionPasswordNeededError as err: # якщо у вас підключеня двухфакторная авторизація то спрацює код нижче, якщо ні то пароль не попросять
+            try:
+                client.sign_in(password=getpass('Enter the password from your telegram: '))
+            except PasswordHashInvalidError:
+                client.sign_in(password=getpass('Invalid password. Please try again: '))
+
+        print('Program start...')
+else:
+    with open('settings.json', 'r+', encoding='UTF-8') as st:
+        data = json.load(st)
+
+    PHONE_NUMBER = data['phone_number']
+    API_ID = data['api_id']
+    API_HASH = data['api_hash']
+    
+    print('Your data succsesfull get from settings.json. You can open and see.')
+
+    client = TelegramClient(PHONE_NUMBER, API_ID, API_HASH) # створення підключення до вашого ТГ
+    client.connect()
+
+    print('Program start...')
 
 
 @client.on(events.NewMessage)
